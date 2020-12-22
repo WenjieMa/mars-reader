@@ -11,72 +11,74 @@ import org.apache.poi.xwpf.usermodel.XWPFFooter;
 import org.apache.poi.xwpf.usermodel.XWPFHeader;
 
 import java.io.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class WordReaderUtil {
 
-    public static void main(String[] args) throws IOException {
-        //        String path = "C:\\Users\\Windows10\\Desktop\\天翼移动通信业务合同.doc";
-        String path = "C:\\Users\\Windows10\\Desktop\\a.docx";
-        InputStream is = new FileInputStream(path);
-
-        if (path.endsWith(".doc")) {
-            readDocFile(is);
-        }else if (path.endsWith(".docx")){
-            readDocxFile(is);
-        }
-        closeStream(is);
-    }
-
-    private static void readDocxFile(InputStream is) throws IOException {
+    private static Map<String,String> readDocxFile(InputStream is) throws IOException {
+        Map<String,String> contentMap  = new HashMap<String, String>();
         XWPFDocument document = new XWPFDocument(is);
         XWPFWordExtractor extractor = new XWPFWordExtractor(document);
 
         // word文档所有的文本
         System.out.println("---------------解析流程：文档中所有文本----------------");
         System.out.println(extractor.getText());
+        contentMap.put("content",extractor.getText());
         // 页眉
         System.out.println("-------------------解析流程：页眉-----------------");
         List<XWPFHeader> headerList = document.getHeaderList();
+        StringBuffer headBuffer = new StringBuffer();
         for (XWPFHeader xwpfHeader: headerList){
             System.out.println(xwpfHeader.getText());//页眉
+            headBuffer.append(xwpfHeader.getText());
         }
+        contentMap.put("header",headBuffer.toString());
 
         // 页脚
         System.out.println("------------------解析流程：页脚------------------");
         List<XWPFFooter> footerList = document.getFooterList();
-
+        StringBuffer footBuffer = new StringBuffer();
         for (XWPFFooter xwpfFooter: footerList){
             System.out.println(xwpfFooter.getText());//页脚
+            footBuffer.append(xwpfFooter.getText());
         }
+        contentMap.put("footer",footBuffer.toString());
 
         // 输出当前word文档的元数据信息，包括作者、文档的修改时间等。
         System.out.println("------------------解析流程：元数据信息-------------------");
         System.out.println(extractor.getMetadataTextExtractor().getText());
+        contentMap.put("origin",extractor.getMetadataTextExtractor().getText());
 
-
+        return contentMap;
     }
 
-    private static void readDocFile(InputStream is) throws IOException {
+    private static Map<String,String>  readDocFile(InputStream is) throws IOException {
+        Map<String,String> contentMap  = new HashMap<String, String>();
         WordExtractor extractor = new WordExtractor(is);
 
         HWPFDocument document = new HWPFDocument(is);
         // word文档所有的文本
         System.out.println("---------------解析流程：文档中所有文本----------------");
         System.out.println(extractor.getText());
+        contentMap.put("content",extractor.getText());
 
         // 页眉
         System.out.println("-------------------解析流程：页眉-----------------");
         System.out.println(extractor.getHeaderText());
-
+        contentMap.put("header",extractor.getHeaderText());
         // 页脚
         System.out.println("------------------解析流程：页脚------------------");
         System.out.println(extractor.getFooterText());
+        contentMap.put("footer",extractor.getFooterText());
 
         // 输出当前word文档的元数据信息，包括作者、文档的修改时间等。
         System.out.println("------------------解析流程：元数据信息-------------------");
         System.out.println(extractor.getMetadataTextExtractor().getText());
+        contentMap.put("origin",extractor.getMetadataTextExtractor().getText());
 
+        /*
         // 获取各个段落的文本
         System.out.println("=======================解析流程：每个段落信息=========================");
         String paraTexts[] = extractor.getParagraphText();
@@ -85,11 +87,14 @@ public class WordReaderUtil {
             System.out.println("Paragraph " + (i + 1) + " : " + paraTexts[i]);
         }
 
+
         // 当前word的一些信息
         printInfo(extractor.getSummaryInformation());
 
         // 当前word的一些信息
         printInfo(extractor.getDocSummaryInformation());
+        */
+        return contentMap;
     }
 
     private static void closeStream(InputStream is) {
