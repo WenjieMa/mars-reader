@@ -1,9 +1,9 @@
 package com.reader;
 
+import com.encode.EncodeUtil;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
-import org.springframework.util.FileCopyUtils;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -32,13 +32,13 @@ public class ImageReaderUtil {
     }
 
     public static String readImage(FileInputStream fileInputStream) throws IOException {
-        byte[] bytes = FileCopyUtils.copyToByteArray(fileInputStream);
+        byte[] bytes = EncodeUtil.copyToByteArray(fileInputStream);
         BufferedImage img = ImageIO.read(new ByteArrayInputStream((bytes)));
         return readImage(img);
     }
 
     public static String readImage(FileInputStream fileInputStream, String language) throws IOException {
-        byte[] bytes = FileCopyUtils.copyToByteArray(fileInputStream);
+        byte[] bytes = EncodeUtil.copyToByteArray(fileInputStream);
         BufferedImage img = ImageIO.read(new ByteArrayInputStream((bytes)));
         return readImage(img,language);
     }

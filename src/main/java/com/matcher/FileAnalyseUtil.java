@@ -4,7 +4,6 @@ import com.constant.BooleanConstant;
 import com.constant.MatcherType;
 import com.encode.EncodeUtil;
 import com.reader.PdfReaderUtil;
-import org.springframework.util.StringUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,7 +22,7 @@ public class FileAnalyseUtil {
     public static void main(String[] args) throws IOException {
         init();
         String path = "C:\\Users\\Windows10\\Desktop\\";
-        path += "实验室设备维保服务合同.pdf";
+        path += "27.技术服务合同（ITMS系统升级技术支撑服务）.pdf";
         FileInputStream inputStream = new FileInputStream(new File(path));
         List<String> pdfDataList = PdfReaderUtil.readPdf(inputStream);
         //List<String> pdfDataList =  PdfReaderUtil.readPdfTable(inputStream);
@@ -71,7 +70,7 @@ public class FileAnalyseUtil {
             if (!"".equals(contractTextCode)) {
                 System.out.println("----------合同文本编号:" + contractTextCode + "----------");
                 contractType = textCode2TypeMap.get(contractTextCode);
-                if (!StringUtils.isEmpty(contractType)) {
+                if (!EncodeUtil.isEmpty(contractType)) {
                     System.out.println("----------合同类型:" + contractType + "----------");
                 }
             }

@@ -1,6 +1,10 @@
 package com.encode;
 
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
+
 public class EncodeUtil {
 
     public static String toDBC(String input) {
@@ -62,5 +66,23 @@ public class EncodeUtil {
             start = end;
         }
         return buffer.toString();
+    }
+
+    public static byte[] copyToByteArray(FileInputStream fileInputStream) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        int len = 0;
+        byte[] b = new byte[1024];
+        while ((len = fileInputStream.read(b, 0, b.length)) != -1) {
+            baos.write(b, 0, len);
+        }
+        byte[] buffer =  baos.toByteArray();
+        return buffer;
+    }
+
+    public static boolean isEmpty(String str) {
+        if (str == null || str == ""){
+            return true;
+        }
+        return false;
     }
 }
