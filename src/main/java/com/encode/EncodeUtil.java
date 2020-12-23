@@ -1,38 +1,36 @@
-package com.filter;
+package com.encode;
 
-import com.reader.PdfReaderUtil;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class EncodeUtil {
-    public static void main(String[] args) throws IOException {
-        String path = "C:\\Users\\Windows10\\Desktop\\实验室设备维保服务合同.pdf";
-        FileInputStream inputStream = new FileInputStream(path);
-        List<String> dataList = PdfReaderUtil.readPdf(inputStream);
-        //String pattern = ".*\\u8bbe\\u5907\\u7ef4\\u62a4\\u5408\\u540c";
-        String pattern = ".*" + gbEncoding("设备维护合同");
-        System.out.println(pattern);
-        String paramName = "";
-        Pattern p = Pattern.compile(pattern);
-        Matcher matcher = p.matcher(dataList.get(0));
-        if (matcher.find()) {
-            paramName = matcher.group(0).replaceAll("\\[", "").replaceAll("\\]", "");
+
+    public static String toDBC(String input) {
+        if(input == null){
+            return "";
         }
-
-        System.out.println(paramName);
-
-
+        char[] c = input.toCharArray();
+        for (int i = 0; i < c.length; i++) {
+            if (c[i] == 12288) {
+                //全角空格为12288，半角空格为32
+                c[i] = (char) 32;
+                continue;
+            }
+            if (c[i] > 65280 && c[i] < 65375)
+                //其他字符半角(33-126)与全角(65281-65374)的对应关系是：均相差65248
+                c[i] = (char) (c[i] - 65248);
+        }
+        return new String(c);
     }
 
-    public static String matherZHValue(String word){
-        String value = "";
-        return value;
-    };
+    public static String toNoSpace(String input) {
+        if(input == null){
+            return "";
+        }
+        return  input.replaceAll(" ", "");
+    }
+
+    public static String toNoSpaceAndDBC(String input) {
+        return  toDBC(toNoSpace(input));
+    }
 
     public static String gbEncoding(final String gbString) {
         char[] utfBytes = gbString.toCharArray();

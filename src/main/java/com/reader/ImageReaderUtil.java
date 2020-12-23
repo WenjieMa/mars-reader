@@ -50,7 +50,7 @@ public class ImageReaderUtil {
     }
 
     public static String readImage(BufferedImage img) throws IOException {
-        instance.setLanguage(EN_LANGUAGE);//中文识别
+        instance.setLanguage(EN_LANGUAGE);//英文识别
         String result = readResult(instance, img);
         return result;
     }
@@ -61,12 +61,12 @@ public class ImageReaderUtil {
         String result = null;
         try {
             // 识别开始获取时间戳
-            long startTime = System.currentTimeMillis();
+            //long startTime = System.currentTimeMillis();
             // 图片识别
             result = instance.doOCR(img);
             // 识别结束时间戳
-            long endTime = System.currentTimeMillis();
-            System.out.println("图片识别时间：" + (endTime - startTime) + " 毫秒");
+            //long endTime = System.currentTimeMillis();
+            //System.out.println("图片识别时间：" + (endTime - startTime) + " 毫秒");
         } catch (TesseractException e) {
             e.printStackTrace();
         }
