@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class ImageReaderUtil {
 
-    public static final String OCR_PATH = "src/main/resources/tessdata";
+    public static final String OCR_PATH = "../tessdata";
     //chi_sim 中文  eng英文
     public static final String ZH_LANGUAGE = "chi_sim";
 
