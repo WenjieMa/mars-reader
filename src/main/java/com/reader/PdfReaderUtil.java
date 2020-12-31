@@ -1,7 +1,6 @@
 package com.reader;
 
 
-import com.encode.EncodeUtil;
 import org.apache.pdfbox.cos.COSName;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;
@@ -10,14 +9,13 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 import org.apache.pdfbox.text.PDFTextStripper;
 import org.apache.pdfbox.text.PDFTextStripperByArea;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.*;
-import java.util.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 
 public class PdfReaderUtil {
@@ -44,6 +42,7 @@ public class PdfReaderUtil {
     }
 
     private static void addImageData(List<String> data, int pageNum, PDDocument document, PDFTextStripper stripper) throws IOException {
+        ImageReaderUtil imageReaderUtil = ImageReaderUtil.getInstance();
         for (int i = 0; i < pageNum; i++) {
             PDPage page = document.getPage(i);
             PDResources resources = page.getResources();
@@ -55,8 +54,8 @@ public class PdfReaderUtil {
                     if (resources.isImageXObject(cosName)) {
                         PDImageXObject imageXObject = (PDImageXObject) resources.getXObject(cosName);
                         BufferedImage image = imageXObject.getImage();
-                        String imageData = ImageReaderUtil.readImage(image);
-                        data.add(imageData);
+                        String imageData = imageReaderUtil.readImage(image);
+                        data.add(imageData.replaceAll("O","0"));
                     }
                 }
             }
@@ -100,7 +99,7 @@ public class PdfReaderUtil {
         }
 
         data.add(content);
-        addImageData(data,pageNum,document,stripper);
+        //addImageData(data,pageNum,document,stripper);
         document.close();
         return data;
 

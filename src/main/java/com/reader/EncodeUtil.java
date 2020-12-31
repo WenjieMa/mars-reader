@@ -1,4 +1,4 @@
-package com.encode;
+package com.reader;
 
 
 import java.io.ByteArrayOutputStream;

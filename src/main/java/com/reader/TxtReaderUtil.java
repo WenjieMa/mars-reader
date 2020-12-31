@@ -1,10 +1,12 @@
 package com.reader;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 
 public class TxtReaderUtil {
 
-    public static String txt2String(InputStream inputStream) {
+    public static String readTxt(InputStream inputStream) {
         String result = "";
         BufferedReader br = null;
         try {

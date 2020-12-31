@@ -10,73 +10,57 @@ import org.apache.poi.xwpf.usermodel.XWPFDocument;
 import org.apache.poi.xwpf.usermodel.XWPFFooter;
 import org.apache.poi.xwpf.usermodel.XWPFHeader;
 
-import java.io.*;
-import java.util.HashMap;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class WordReaderUtil {
 
-    private static Map<String,String> readDocxFile(InputStream is) throws IOException {
-        Map<String,String> contentMap  = new HashMap<String, String>();
+    public static List<String>  readDocxFile(InputStream is) throws IOException {
+        List<String> contentList  = new ArrayList<>();
         XWPFDocument document = new XWPFDocument(is);
         XWPFWordExtractor extractor = new XWPFWordExtractor(document);
 
         // word文档所有的文本
-        System.out.println("---------------解析流程：文档中所有文本----------------");
-        System.out.println(extractor.getText());
-        contentMap.put("content",extractor.getText());
+        contentList.add(extractor.getText());
         // 页眉
-        System.out.println("-------------------解析流程：页眉-----------------");
         List<XWPFHeader> headerList = document.getHeaderList();
         StringBuffer headBuffer = new StringBuffer();
         for (XWPFHeader xwpfHeader: headerList){
-            System.out.println(xwpfHeader.getText());//页眉
             headBuffer.append(xwpfHeader.getText());
         }
-        contentMap.put("header",headBuffer.toString());
+        contentList.add(headBuffer.toString());
 
         // 页脚
-        System.out.println("------------------解析流程：页脚------------------");
         List<XWPFFooter> footerList = document.getFooterList();
         StringBuffer footBuffer = new StringBuffer();
         for (XWPFFooter xwpfFooter: footerList){
-            System.out.println(xwpfFooter.getText());//页脚
             footBuffer.append(xwpfFooter.getText());
         }
-        contentMap.put("footer",footBuffer.toString());
+        contentList.add(footBuffer.toString());
 
         // 输出当前word文档的元数据信息，包括作者、文档的修改时间等。
-        System.out.println("------------------解析流程：元数据信息-------------------");
-        System.out.println(extractor.getMetadataTextExtractor().getText());
-        contentMap.put("origin",extractor.getMetadataTextExtractor().getText());
+        contentList.add(extractor.getMetadataTextExtractor().getText());
 
-        return contentMap;
+        return contentList;
     }
 
-    private static Map<String,String>  readDocFile(InputStream is) throws IOException {
-        Map<String,String> contentMap  = new HashMap<String, String>();
+    public static List<String>  readDocFile(InputStream is) throws IOException {
+        List<String> contentList  = new ArrayList<>();
         WordExtractor extractor = new WordExtractor(is);
 
         HWPFDocument document = new HWPFDocument(is);
         // word文档所有的文本
-        System.out.println("---------------解析流程：文档中所有文本----------------");
-        System.out.println(extractor.getText());
-        contentMap.put("content",extractor.getText());
+        contentList.add(extractor.getText());
 
         // 页眉
-        System.out.println("-------------------解析流程：页眉-----------------");
-        System.out.println(extractor.getHeaderText());
-        contentMap.put("header",extractor.getHeaderText());
+        contentList.add(extractor.getHeaderText());
         // 页脚
-        System.out.println("------------------解析流程：页脚------------------");
-        System.out.println(extractor.getFooterText());
-        contentMap.put("footer",extractor.getFooterText());
+        contentList.add(extractor.getFooterText());
 
         // 输出当前word文档的元数据信息，包括作者、文档的修改时间等。
-        System.out.println("------------------解析流程：元数据信息-------------------");
-        System.out.println(extractor.getMetadataTextExtractor().getText());
-        contentMap.put("origin",extractor.getMetadataTextExtractor().getText());
+        contentList.add(extractor.getMetadataTextExtractor().getText());
 
         /*
         // 获取各个段落的文本
@@ -94,10 +78,10 @@ public class WordReaderUtil {
         // 当前word的一些信息
         printInfo(extractor.getDocSummaryInformation());
         */
-        return contentMap;
+        return contentList;
     }
 
-    private static void closeStream(InputStream is) {
+    public static void closeStream(InputStream is) {
         if (is != null) {
             try {
                 is.close();
@@ -112,7 +96,7 @@ public class WordReaderUtil {
      *
      * @param info
      */
-    private static void printInfo(SummaryInformation info) {
+    public static void printInfo(SummaryInformation info) {
         System.out.println("===================从getSummaryInformation中获取信息===============");
         // 作者
         System.out.println("---------------------作者----------------------");
@@ -136,7 +120,7 @@ public class WordReaderUtil {
      *
      * @param info
      */
-    private static void printInfo(DocumentSummaryInformation info) {
+    public static void printInfo(DocumentSummaryInformation info) {
         System.out.println("===================从getDocSummaryInformation中获取信息===============");
         // 分类
         System.out.println("---------------------分类----------------------");

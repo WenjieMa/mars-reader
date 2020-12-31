@@ -1,6 +1,5 @@
 package com.reader;
 
-import com.encode.EncodeUtil;
 import net.sourceforge.tess4j.ITesseract;
 import net.sourceforge.tess4j.Tesseract;
 import net.sourceforge.tess4j.TesseractException;
@@ -13,7 +12,7 @@ import java.io.IOException;
 
 public class ImageReaderUtil {
 
-    public static final String OCR_PATH = "../tessdata";
+    public static final String OCR_PATH = "src/main/resources/tessdata";
     //chi_sim 中文  eng英文
     public static final String ZH_LANGUAGE = "chi_sim";
 
@@ -21,43 +20,62 @@ public class ImageReaderUtil {
 
     public static ITesseract instance = new Tesseract();
 
-    public static String readImage(byte[] imageData) throws IOException {
+    public static volatile ImageReaderUtil imageReaderUtil;
+
+    private ImageReaderUtil(){
+
+    }
+
+    public static ImageReaderUtil getInstance() {
+        if(imageReaderUtil==null){
+            synchronized (ImageReaderUtil.class){
+                if(imageReaderUtil==null){
+                    imageReaderUtil = new ImageReaderUtil();
+                }
+            }
+        }
+        return imageReaderUtil;
+    }
+
+    public  String readImage(byte[] imageData) throws IOException {
         BufferedImage img = ImageIO.read(new ByteArrayInputStream((imageData)));
         return readImage(img);
     }
 
-    public static String readImage(byte[] imageData, String language) throws IOException {
+    public  String readImage(byte[] imageData, String language) throws IOException {
         BufferedImage img = ImageIO.read(new ByteArrayInputStream((imageData)));
         return readImage(img,language);
     }
 
-    public static String readImage(FileInputStream fileInputStream) throws IOException {
+    public  String readImage(FileInputStream fileInputStream) throws IOException {
         byte[] bytes = EncodeUtil.copyToByteArray(fileInputStream);
         BufferedImage img = ImageIO.read(new ByteArrayInputStream((bytes)));
         return readImage(img);
     }
 
-    public static String readImage(FileInputStream fileInputStream, String language) throws IOException {
+    public  String readImage(FileInputStream fileInputStream, String language) throws IOException {
         byte[] bytes = EncodeUtil.copyToByteArray(fileInputStream);
         BufferedImage img = ImageIO.read(new ByteArrayInputStream((bytes)));
         return readImage(img,language);
     }
 
-    public static String readImage(BufferedImage img, String language) throws IOException {
+    public  String readImage(BufferedImage img, String language) throws IOException {
         instance.setLanguage(language);
         String result = readResult(instance, img);
         return result;
     }
 
-    public static String readImage(BufferedImage img) throws IOException {
+    public String readImage(BufferedImage img) throws IOException {
         instance.setLanguage(EN_LANGUAGE);//英文识别
         String result = readResult(instance, img);
         return result;
     }
 
-    private static String readResult(ITesseract instance, BufferedImage img) {
+    private  String readResult(ITesseract instance, BufferedImage img) {
         // 设置训练库的位置
-        instance.setDatapath(OCR_PATH);
+        String fileName = this.getClass().getClassLoader().getResource("../../").getPath()+"resources/tessdata";
+        fileName = fileName.substring(1,fileName.length()).replaceAll("/","//");
+        instance.setDatapath(fileName);
         String result = null;
         try {
             // 识别开始获取时间戳
